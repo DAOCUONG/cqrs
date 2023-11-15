@@ -91,6 +91,21 @@ impl<A: Aggregate> EventStore<A> for MemStore<A> {
         );
         Ok(events)
     }
+    async fn load_events_from_sequence(
+        &self,
+        aggregate_id: &str,
+        sequence: usize,
+    ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>> {
+        let events = self.load_commited_events(aggregate_id)?;
+        let mut events = events.clone();
+        events.retain(|event| event.sequence >= sequence);
+        println!(
+            "loading: {} events for aggregate ID '{}'",
+            &events.len(),
+            &aggregate_id
+        );
+        Ok(events)
+    }
 
     async fn load_aggregate(
         &self,

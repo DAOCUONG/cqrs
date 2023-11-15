@@ -21,6 +21,14 @@ where
         &self,
         aggregate_id: &str,
     ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>>;
+
+    /// Load all events for a particular `aggregate_id` from squence 
+    async fn load_events_from_sequence(
+        &self,
+        aggregate_id: &str,
+        sqeuence: usize,
+    ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>>;
+
     /// Load aggregate at current state
     async fn load_aggregate(
         &self,

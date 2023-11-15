@@ -194,7 +194,20 @@ where
             &self.event_upcasters,
         )?)
     }
-
+    async fn load_events_from_sequence(
+        &self,
+        aggregate_id: &str,
+        sequence: usize,
+    ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>> {
+        let serialized_events = self
+            .repo
+            .get_events_from_sequence::<A>(aggregate_id, sequence)
+            .await?;
+        Ok(deserialize_events(
+            serialized_events,
+            &self.event_upcasters,
+        )?)
+    }
     async fn load_aggregate(
         &self,
         aggregate_id: &str,
@@ -466,6 +479,15 @@ pub(crate) mod shared_test {
         ) -> Result<Vec<SerializedEvent>, PersistenceError> {
             self.events_result.lock().unwrap().take().unwrap()
         }
+
+        async fn get_events_from_sequence<A: Aggregate>(
+            &self,
+            _aggregate_id: &str,
+            sequence: usize,
+        ) -> Result<Vec<SerializedEvent>, PersistenceError> {
+            self.events_result.lock().unwrap().take().unwrap()
+        }
+
         async fn get_last_events<A: Aggregate>(
             &self,
             _aggregate_id: &str,

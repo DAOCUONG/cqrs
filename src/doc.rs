@@ -202,7 +202,13 @@ impl PersistedEventRepository for MyRepository {
     ) -> Result<Vec<SerializedEvent>, PersistenceError> {
         todo!()
     }
-
+    async fn get_events_from_sequence<A: Aggregate>(
+        &self,
+        _aggregate_id: &str,
+        sequence: usize,
+    ) -> Result<Vec<SerializedEvent>, PersistenceError> {
+        todo!()
+    }
     async fn get_last_events<A: Aggregate>(
         &self,
         _aggregate_id: &str,

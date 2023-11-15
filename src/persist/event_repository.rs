@@ -13,6 +13,13 @@ pub trait PersistedEventRepository: Send + Sync {
         aggregate_id: &str,
     ) -> Result<Vec<SerializedEvent>, PersistenceError>;
 
+    /// Returns all events for a single aggregate instance.
+    async fn get_events_from_sequence<A: Aggregate>(
+        &self,
+        aggregate_id: &str,
+        sequence: usize,
+    ) -> Result<Vec<SerializedEvent>, PersistenceError>;
+
     /// Returns the last events for a single aggregate instance.
     async fn get_last_events<A: Aggregate>(
         &self,
